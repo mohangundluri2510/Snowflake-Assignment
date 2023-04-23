@@ -64,7 +64,7 @@ select * from json_table;
 -- Creating external stage
 CREATE STAGE External_stage
     URL='s3://employee-data-bucket-1/'
-    CREDENTIALS=(AWS_KEY_ID='AKIAVKO23O4OZCNXVTI3' AWS_SECRET_KEY='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');
+    CREDENTIALS=(AWS_KEY_ID='' AWS_SECRET_KEY='');
 
 -- list all the stage files
 LIST @External_stage;
