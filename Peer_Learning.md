@@ -76,7 +76,7 @@ ALTER TABLE IF EXISTS employee_int MODIFY phonenumber SET MASKING POLICY contact
 
 Finally Grating the necessary privileges to the role **Developer** and **PII** to check masking policies works properly or not.<br>
 
-### Rohith`s Approach--
+### Aawat`s Approach--
 
 * Created **Admin** and **PII** roles and granted the roles to **ACCOUNTADMIN** role. <br>
 * Created **Developer** role and granted to the role **Admin** <br>
