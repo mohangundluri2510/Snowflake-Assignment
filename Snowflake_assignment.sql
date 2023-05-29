@@ -60,11 +60,29 @@ COPY INTO  JSON_TABLE FROM @%JSON_TABLE
 
 select * from json_table;
 
+-- Creating integration
+CREATE OR REPLACE STORAGE INTEGRATION s3_integration_snowflake
+type = external_stage
+storage_provider = s3
+enabled = true
+storage_aws_role_arn = 'arn:aws:iam::574344495913:role/snow_integration_1'
+storage_allowed_locations = ('s3://employee-data-bucket-snowflake-1/data/employees.csv');
 
+-- Granting access to the admin role
+GRANT ALL ON INTEGRATION s3_integration_snowflake TO ROLE admin; 
+
+-- Getting snowflake user arn for integration
+DESC INTEGRATION s3_integration_snowflake;  --arn:aws:iam::738369923946:user/nqi90000-s
+
+-- Creating external_stage table
+CREATE OR REPLACE STAGE external_stage 
+    URL = 's3://employee-data-bucket-snowflake-1/data/employees.csv' 
+    STORAGE_INTEGRATION = s3_integration_snowflake;
+    
 -- Creating external stage
-CREATE STAGE External_stage
-    URL='s3://employee-data-bucket-1/'
-    CREDENTIALS=(AWS_KEY_ID='' AWS_SECRET_KEY='');
+-- CREATE STAGE External_stage
+--     URL='s3://employee-data-bucket-1/'
+--     CREDENTIALS=(AWS_KEY_ID='' AWS_SECRET_KEY='');
 
 -- list all the stage files
 LIST @External_stage;
@@ -186,16 +204,6 @@ USE ROLE PII;
 -- selecting from the internal_stage_for_parquet
 SELECT * FROM  TABLE(INFER_SCHEMA(LOCATION => '@internal_stage_for_parquet' , FILE_FORMAT => 'Parquet_file_format'));
 
-
-
--- Creating user with role developer
-CREATE USER IF NOT EXISTS Developer1 PASSWORD='Developer1' DEFAULT_ROLE =' Developer'  DEFAULT_WAREHOUSE = 'assignment_wh'  MUST_CHANGE_PASSWORD = FALSE;;
-GRANT ROLE Developer TO USER Developer1;
-
-
--- Using developer1 user
-USE user 'Developer1' PASSWORD='Developer1';
-
-
+USE ROLE DEVELOPER;
 -- selecting from the internal_stage_for_parquet
 SELECT * FROM  TABLE(INFER_SCHEMA(LOCATION => '@internal_stage_for_parquet' , FILE_FORMAT => 'Parquet_file_format'));
