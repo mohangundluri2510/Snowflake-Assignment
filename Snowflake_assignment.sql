@@ -39,6 +39,23 @@ CREATE OR REPLACE DATABASE assignment_db;
 -- Creating schema
 CREATE SCHEMA IF NOT EXISTS assignment_db.my_schema;
 
+CREATE OR REPLACE TABLE Empolyee_Data_Table(
+    Name VARCHAR(50) NOT NULL,
+    Phone VARCHAR(15) NOT NULL,
+    Email VARCHAR(100) NOT NULL,
+    Country VARCHAR(20) NOT NULL,
+    Address VARCHAR(100) NOT NULL,
+);
+CREATE OR REPLACE STAGE employee_stage 
+    FILE_FORMAT = CSV_FILE_FORMAT;
+    
+-- PUT file:///Users/mohangundluri/Downloads/data.CSV @empolyee_stage;
+COPY INTO Empolyee_Data_Table 
+    FROM @empolyee_stage 
+    FILE_FORMAT = CSV_FILE_FORMAT;
+
+
+
 -- Creating table to load json data
 CREATE TABLE JSON_TABLE(
     JSON_DATA VARIANT
@@ -51,7 +68,9 @@ LIST @%JSON_TABLE;
 
 -- Creating file format for json
 CREATE OR REPLACE FILE FORMAT JSON_FILE_FORMAT
-    TYPE = JSON;
+    TYPE = JSON
+    FLATTEN = TRUE;
+    
 
 -- Coping data to JSON_TABLE
 COPY INTO  JSON_TABLE FROM @%JSON_TABLE
